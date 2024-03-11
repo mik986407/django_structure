@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    .news-section {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .news-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #007bff;
+    }
+
+    .news-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .news-list li {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        margin-bottom: 10px;
+    }
+    {% comment %} .news_row {
+        text-overflow: ellipsis;
+    } {% endcomment %}
+    a {
+        font-weight: bold; /* 加粗文字 */
+        font-size: 25px
+        {% comment %} display: block; /* 讓超連結佔滿整個父元素的寬度 */ {% endcomment %}
+    }
+</style>
+
+
+<div class="jumbotron mt-3 text-center">
+    <h1 class = "font-weight-bold">流感預測及疫苗接種消息網站</h1>
+    <p class="lead mb-6 font-weight-bold">歡迎使用此網站~</p>
+    {% comment %} <a class="btn btn-lg btn-primary" href="{% url 'Login' %}" role="button">登入 &#187;</a> {% endcomment %}
+    <div class="row">
+        <div class="col-md-6">
+            <a class="btn btn-lg btn-primary" href="{% url 'Login' %}" role="button">研究人員登入 &#187;</a>
+        </div>
+        <div class="col-md-6">
+            <a class="btn btn-lg btn-primary" href="{% url 'Login_normal' %}" role="button">一般民眾登入 &#187;</a>
+        </div>
+    </div>
+</div>
+
+<!-- 新聞公告區域 -->
+<div class="row">
+    <div class="col-md-12 news-section">
+        <h2 class="text-center">流感相關消息</h2>
+        <ul class="news-list">
+            <li class = "news_row"><a href="https://www.cdc.gov.tw/Bulletin/Detail/o4q9BScbLD7CZBfNEKM_8Q?typeid=9">國內新增1例境外移入瘧疾死亡病例，民眾如赴瘧疾流行地區前請至旅遊醫學門診諮詢取得預防性藥物，並於當地做好防蚊措施</a></li>
+            <li class = "news_row"><a href="https://www.cdc.gov.tw/Bulletin/Detail/pvQiLcriB2XOzcyvvKEy1g?typeid=9">目前處流感流行期，且上週新增14例流感重症、3例死亡個案，提醒民眾儘早完成接種流感疫苗，以獲得足夠保護力</a></li>
+            <li class = "news_row"><a href="https://www.cdc.gov.tw/Bulletin/Detail/VW6KpyUuzeP82TeIgts4Hg?typeid=9">「疫苗守護 病毒Blue！」防疫醫師劉裕誠攜手「漂亮媽咪」嚴立婷，呼籲65歲以上長者及幼兒接種流感疫苗，共同提升保護力。</a></li>
+            <!-- 可以添加更多的新聞標題 -->
+        </ul>
+    </div>
+</div>
+
+
+{% endblock  %}

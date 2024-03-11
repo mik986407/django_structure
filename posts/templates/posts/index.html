@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Marker</title>
+    <!-- The callback parameter is required, so we use console.debug as a noop -->
+    {% comment %} <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1KUeM10oJ5WpLaz_wDJtEwSu05_VrTCo&callback=console.debug&libraries=maps,marker&v=beta"> {% endcomment %}
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.4.min.js"
+      integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
+      crossorigin="anonymous">
+    </script>
+    <style>
+        /* 基底格式 */
+        body {
+          font-family: "Lato", sans-serif;
+          transition: background-color .5s;
+        }
+        /* 主標題 */
+        .main_subject {
+            text-align: center; /* 標題置中 */
+        }
+        .sidenav {
+          height: 100%;
+          width: 0;
+          position: fixed;
+          z-index: 1;
+          top: 0;
+          left: 0;
+          background-color: #111;
+          overflow-x: hidden;
+          transition: 0.5s;
+          padding-top: 60px;
+        }
+        
+        .sidenav a {
+          padding: 8px 8px 8px 32px;
+          text-decoration: none;
+          font-size: 25px;
+          color: #818181;
+          display: block;
+          transition: 0.3s;
+        }
+        
+        .sidenav a:hover {
+          color: #f1f1f1;
+        }
+        
+        .sidenav .closebtn {
+          position: absolute;
+          top: 0;
+          right: 25px;
+          font-size: 36px;
+          margin-left: 50px;
+        }
+        
+        #main {
+          transition: margin-left .5s;
+          padding: 16px;
+        }
+        
+        @media screen and (max-height: 450px) {
+          .sidenav {padding-top: 15px;}
+          .sidenav a {font-size: 18px;}
+        }
+    </style>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        gmp-map {
+          height: 800px;
+          margin: 0 auto; /* 水平居中 */
+          width: 1000px;
+        }
+  
+        /* Optional: Makes the sample page fill the window. */
+        html,
+        body {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+        /* 设置标题的样式 */
+        #map-title {
+            text-align: center; /* 居中显示文本 */
+            font-size: 24px; /* 设置字体大小 */
+            margin-bottom: 5px; /* 设置底部边距 */
+        }
+        /* 整体容器的样式，居中显示 */
+        #container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* 设置高度为视窗高度，确保整个页面都居中显示 */
+        }
+
+        /* 设置地图容器的样式 */
+        #map-container {
+            padding: 10px; /* 设置上下左右的边距为50px */
+            border: 2px solid #000; /* 设置边框为黑色，2px宽度 */
+        }
+
+        /* 设置地图的样式，确保地图占满整个容器 */
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        #output-image {
+          max-width: 100%;
+          height: auto;
+          margin-top: 20px;
+      }
+      #button-container {
+        text-align: center;
+        margin-top: 20px;
+      }
+        button {
+          margin: 5px;
+      }
+      #output-image {
+        max-width: 100%;
+        height: auto;
+        width: 50%;
+        margin: 20px auto; /* 將圖片水平居中 */
+        display: block; /* 避免底部有兩個margin合併的問題 */
+      }
+      .success {
+        margin: 5px;
+        width: 150px;
+        padding: 10px;
+        background-color: #2ecc71;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .success:hover {
+        background-color: #27ae60;
+    }
+    </style>
+
+
+</head>
+<body>
+
+<a class="ml-4 bg-blue-500 text-white px-3 py-1 rounded" href="{% url 'Index' %}" role="button">返回 &#187;</a>
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="https://antiflu.cdc.gov.tw/">流感防治一網通</a>
+    <a href="https://www.cdc.gov.tw/Category/List/ZrvS2zJwZ03tl8CbKYdI8g">疾管署統計專區</a>
+    <a href="https://nidss.cdc.gov.tw/Home/Index">傳染病統計資訊查詢系統</a>
+    <a href="https://data.cdc.gov.tw/">疾管署資料開放平台</a>
+  </div>
+  
+  <div id="main">
+    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; 其他</span>
+    {% comment %} <h2 class="main_subject">流感相關資訊</h2>
+    <p class="main_subject">維修中~請見諒</p> {% endcomment %}
+    <div id = 'button-container'> 
+      <button class="btn success" onclick="changeImage('/media/images/flu_stat_1.png')">趨勢圖</button>
+      <button class="btn success" onclick="changeImage('/media/images/flu_stat_2.png')">地理分布</button>
+      <button class="btn success" onclick="changeImage('/media/images/flu_stat_3.png')">圖表</button>
+      <button class="btn success" onclick="changeImage('/media/images/flu_stat_4.png')">同期比較</button>
+      <button class="btn success" onclick="changeImage('/media/images/flu_stat_5.png')">境外移入</button>
+   </div>
+   <img id="output-image" src="/media/images/flu_stat_1.png" alt="Output Image">
+  </div>
+  
+  <script>
+  function openNav() {
+    document.getElementById("mySidenav").style.width = "320px";
+    document.getElementById("main").style.marginLeft = "320px";
+    document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+  }
+  
+  function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("main").style.marginLeft= "0";
+    document.body.style.backgroundColor = "white";
+  }
+  function changeImage(imageSource) {
+    var outputImage = document.getElementById('output-image');
+    outputImage.src = imageSource;
+}
+  </script>
+{% comment %} <table class="table" border="1">
+    <thead>
+        <tr>
+            <th>景點名稱</th>
+            <th>景點位置</th>
+            <th>作者</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for post in posts%}
+            <tr>
+                <td>{{ post.subject }}</td>
+                <td>{{ post.location }}</td>
+                <td>{{ post.author }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- 这里粘贴你从 Google 地图获取的嵌入代码 -->
+<!-- 创建一个容器来显示地图 -->
+<h3 id="map-title">My Google Maps Demo</h3>
+<div id="container">
+<div id="map-container">
+<div id="map">
+<gmp-map center="23.5,121" zoom="8" map-id="DEMO_MAP_ID" >
+    <gmp-advanced-marker position="23.1,121" title="My location"></gmp-advanced-marker>
+    <gmp-advanced-marker position="25.042158,121.516978" title="臺大醫院"></gmp-advanced-marker>
+  </gmp-map>
+</div>
+</div>
+</div>
+<p>其他网页内容...</p> {% endcomment %}
+
+</body>
+</html>
